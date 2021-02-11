@@ -1,1 +1,1 @@
-# international-checkers
+# C++ Implementation of International Checkers
