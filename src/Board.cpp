@@ -4,9 +4,12 @@
 void Board::printBoard() //Board printer.
 {
     ios::sync_with_stdio(false);
-    for (int y = 0; y < 10; ++y) {
-        cout << "   |---+---+---+---+---+---+---+---+---+---|\n" << (y < 9 ? " " : "") << y + 1 << " ";
-        for (int x = 0; x < 10; ++x) {
+    for (int y = 0; y < 10; ++y)
+    {
+        cout << "   |---+---+---+---+---+---+---+---+---+---|\n"
+             << (y < 9 ? " " : "") << y + 1 << " ";
+        for (int x = 0; x < 10; ++x)
+        {
             cout << "| " << board[y][x] << " ";
         }
         cout << "|" << endl;

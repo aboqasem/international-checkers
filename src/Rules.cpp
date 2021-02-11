@@ -1,8 +1,10 @@
 #include "Rules.hpp"
 
 /*---------------------------------------------------------------------------------------------------------*/
-bool Rules::inBoardCoordinates(const int &x1, const int &y1, const int &x2, const int &y2, string &error) {
-    if (y1 == -1 || y2 == -1 || x1 == -1 || x2 == -1) {
+bool Rules::inBoardCoordinates(const int &x1, const int &y1, const int &x2, const int &y2, string &error)
+{
+    if (y1 == -1 || y2 == -1 || x1 == -1 || x2 == -1)
+    {
         error = "Case: Out of range coordinates.";
         return false;
     }
@@ -11,65 +13,80 @@ bool Rules::inBoardCoordinates(const int &x1, const int &y1, const int &x2, cons
 
 bool Rules::validSquare(const int &x1, const int &y1, const int &x2, const int &y2, Board &BOARD, string &error) //
 {
-    if (BOARD.getBoard(x1, y1) == ' ' || BOARD.getBoard(x2, y2) == ' ') {
+    if (BOARD.getBoard(x1, y1) == ' ' || BOARD.getBoard(x2, y2) == ' ')
+    {
         error = "Case: Not allowed to move from or to light squares.";
         return false;
     }
     return true;
 }
 
-bool Rules::fromUnoccupiedSquare(const int &x1, const int &y1, Board BOARD, string &error) {
-    if (BOARD.getBoard(x1, y1) == '#') {
+bool Rules::fromUnoccupiedSquare(const int &x1, const int &y1, Board BOARD, string &error)
+{
+    if (BOARD.getBoard(x1, y1) == '#')
+    {
         error = "Case: This square does not contain a piece of yours.";
         return true;
     }
     return false;
 }
 
-bool Rules::validPiece(const int &x1, const int &y1, char PLAYER, Board &BOARD, string &error) {
-    if (tolower(BOARD.getBoard(x1, y1)) != PLAYER) {
+bool Rules::validPiece(const int &x1, const int &y1, char PLAYER, Board &BOARD, string &error)
+{
+    if (tolower(BOARD.getBoard(x1, y1)) != PLAYER)
+    {
         error = "Case: This piece belongs to the opposite player.";
         return false;
     }
     return true;
 }
 
-bool Rules::toUnoccupiedSquare(const int &x2, const int &y2, Board BOARD, string &error) {
-    if (BOARD.getBoard(x2, y2) != '#') {
+bool Rules::toUnoccupiedSquare(const int &x2, const int &y2, Board BOARD, string &error)
+{
+    if (BOARD.getBoard(x2, y2) != '#')
+    {
         error = "Case: Not allowed to move to an occupied square.";
         return false;
     }
     return true;
 }
 
-bool Rules::becomeCrown(const int &y2, const char &PLAYER) {
-    switch (PLAYER) {
-        case 'a':
-            return y2 == 0 ? true : false;
-            break;
-        case 'b':
-            return y2 == 9 ? true : false;
-            break;
-        default:
-            return false;
+bool Rules::becomeCrown(const int &y2, const char &PLAYER)
+{
+    switch (PLAYER)
+    {
+    case 'a':
+        return y2 == 0 ? true : false;
+        break;
+    case 'b':
+        return y2 == 9 ? true : false;
+        break;
+    default:
+        return false;
     }
 }
 
 bool Rules::basicRules(const int &x1, const int &y1, const int &x2, const int &y2, char PLAYER, Board &BOARD,
-                       string &error) {
+                       string &error)
+{
     if (!inBoardCoordinates(x1, y1, x2, y2, error) ||
         !validSquare(x1, y1, x2, y2, BOARD, error) ||
         fromUnoccupiedSquare(x1, y1, BOARD, error) ||
         !validPiece(x1, y1, PLAYER, BOARD, error) ||
-        !toUnoccupiedSquare(x2, y2, BOARD, error)) { return false; }
+        !toUnoccupiedSquare(x2, y2, BOARD, error))
+    {
+        return false;
+    }
     return true;
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
 bool OrdinaryRules::legalMove(const int &x1, const int &y1, const int &x2, const int &y2, const char &OTHERPLAYER,
                               Board &BOARD, string &error, const int &onemove, const int &currentx,
-                              const int &currenty) {
-    if (onemove == 0 && currentx != x1 && currenty != y1) {
+                              const int &currenty)
+{
+    if (onemove == 0 && currentx != x1 && currenty != y1)
+    {
         error = "Case: Not an allowed move for an ordinary piece.";
         return false;
     }
@@ -86,7 +103,8 @@ bool OrdinaryRules::legalMove(const int &x1, const int &y1, const int &x2, const
          (tolower(BOARD.getBoard(x2 - 1, y2 - 1)) != OTHERPLAYER)) ||
         (((x1 < x2 && y1 > y2) && (x2 > x1 + 1 && y2 < y1 - 1)) &&
          (tolower(BOARD.getBoard(x2 - 1, y2 + 1)) != OTHERPLAYER)) ||
-        (onemove == 0 && (y2 == y1 - 1 || y2 == y1 + 1))) {
+        (onemove == 0 && (y2 == y1 - 1 || y2 == y1 + 1)))
+    {
         error = "Case: Not an allowed move for an ordinary piece.";
         return false;
     }
@@ -94,37 +112,44 @@ bool OrdinaryRules::legalMove(const int &x1, const int &y1, const int &x2, const
 }
 
 bool OrdinaryRules::upRightCapture(const int &x1, const int &y1, const int &x2, const int &y2, const char &OTHERPLAYER,
-                                   Board &BOARD) {
+                                   Board &BOARD)
+{
     if ((x2 > x1 && y2 < y1) && (x2 == x1 + 2 && y2 == y1 - 2) && BOARD.getBoard(x2, y2) == '#' &&
-        tolower(BOARD.getBoard(x1 + 1, y1 - 1)) == OTHERPLAYER) {
+        tolower(BOARD.getBoard(x1 + 1, y1 - 1)) == OTHERPLAYER)
+    {
         return true;
     }
     return false;
 }
 
 bool OrdinaryRules::upLeftCapture(const int &x1, const int &y1, const int &x2, const int &y2, const char &OTHERPLAYER,
-                                  Board &BOARD) {
+                                  Board &BOARD)
+{
     if ((x2 < x1 && y2 < y1) && (x2 == x1 - 2 && y2 == y1 - 2) && BOARD.getBoard(x2, y2) == '#' &&
-        tolower(BOARD.getBoard(x1 - 1, y1 - 1)) == OTHERPLAYER) {
+        tolower(BOARD.getBoard(x1 - 1, y1 - 1)) == OTHERPLAYER)
+    {
         return true;
     }
     return false;
 }
 
-bool
-OrdinaryRules::downRightCapture(const int &x1, const int &y1, const int &x2, const int &y2, const char &OTHERPLAYER,
-                                Board &BOARD) {
+bool OrdinaryRules::downRightCapture(const int &x1, const int &y1, const int &x2, const int &y2, const char &OTHERPLAYER,
+                                     Board &BOARD)
+{
     if ((x2 > x1 && y2 > y1) && (x2 == x1 + 2 && y2 == y1 + 2) && BOARD.getBoard(x2, y2) == '#' &&
-        tolower(BOARD.getBoard(x1 + 1, y1 + 1)) == OTHERPLAYER) {
+        tolower(BOARD.getBoard(x1 + 1, y1 + 1)) == OTHERPLAYER)
+    {
         return true;
     }
     return false;
 }
 
 bool OrdinaryRules::downLeftCapture(const int &x1, const int &y1, const int &x2, const int &y2, const char &OTHERPLAYER,
-                                    Board &BOARD) {
+                                    Board &BOARD)
+{
     if ((x2 < x1 && y2 > y1) && (x2 == x1 - 2 && y2 == y1 + 2) && BOARD.getBoard(x2, y2) == '#' &&
-        tolower(BOARD.getBoard(x1 - 1, y1 + 1)) == OTHERPLAYER) {
+        tolower(BOARD.getBoard(x1 - 1, y1 + 1)) == OTHERPLAYER)
+    {
         return true;
     }
     return false;
@@ -132,40 +157,56 @@ bool OrdinaryRules::downLeftCapture(const int &x1, const int &y1, const int &x2,
 
 bool OrdinaryRules::captureAvailable(const int &x1, const int &y1, const int &x2, const int &y2, char OTHERPLAYER,
                                      Board &BOARD, string &error, const string &previousdirection,
-                                     const int &checkeverydirection) {
-    if (checkeverydirection == 0) {
+                                     const int &checkeverydirection)
+{
+    if (checkeverydirection == 0)
+    {
         if (upRightCapture(x1, y1, x2, y2, OTHERPLAYER, BOARD) ||
             upLeftCapture(x1, y1, x2, y2, OTHERPLAYER, BOARD) ||
             downRightCapture(x1, y1, x2, y2, OTHERPLAYER, BOARD) ||
-            downLeftCapture(x1, y1, x2, y2, OTHERPLAYER, BOARD)) {
+            downLeftCapture(x1, y1, x2, y2, OTHERPLAYER, BOARD))
+        {
             return true;
         }
-    } else if (checkeverydirection == 1) {
-        if (previousdirection == "ur") {
+    }
+    else if (checkeverydirection == 1)
+    {
+        if (previousdirection == "ur")
+        {
             if (upRightCapture(x2, y2, x2 + 2, y2 - 2, OTHERPLAYER, BOARD) ||
                 upLeftCapture(x2, y2, x2 - 2, y2 - 2, OTHERPLAYER, BOARD) ||
-                downRightCapture(x2, y2, x2 + 2, y2 + 2, OTHERPLAYER, BOARD)) {
+                downRightCapture(x2, y2, x2 + 2, y2 + 2, OTHERPLAYER, BOARD))
+            {
                 error = "Case: There is at least one more compulsory capture.";
                 return true;
             }
-        } else if (previousdirection == "ul") {
+        }
+        else if (previousdirection == "ul")
+        {
             if (upRightCapture(x2, y2, x2 + 2, y2 - 2, OTHERPLAYER, BOARD) ||
                 upLeftCapture(x2, y2, x2 - 2, y2 - 2, OTHERPLAYER, BOARD) ||
-                downLeftCapture(x2, y2, x2 - 2, y2 + 2, OTHERPLAYER, BOARD)) {
+                downLeftCapture(x2, y2, x2 - 2, y2 + 2, OTHERPLAYER, BOARD))
+            {
                 error = "Case: There is at least one more compulsory capture.";
                 return true;
             }
-        } else if (previousdirection == "dr") {
+        }
+        else if (previousdirection == "dr")
+        {
             if (upRightCapture(x2, y2, x2 + 2, y2 - 2, OTHERPLAYER, BOARD) ||
                 downRightCapture(x2, y2, x2 + 2, y2 + 2, OTHERPLAYER, BOARD) ||
-                downLeftCapture(x2, y2, x2 - 2, y2 + 2, OTHERPLAYER, BOARD)) {
+                downLeftCapture(x2, y2, x2 - 2, y2 + 2, OTHERPLAYER, BOARD))
+            {
                 error = "Case: There is at least one more compulsory capture.";
                 return true;
             }
-        } else if (previousdirection == "dl") {
+        }
+        else if (previousdirection == "dl")
+        {
             if (upLeftCapture(x2, y2, x2 - 2, y2 - 2, OTHERPLAYER, BOARD) ||
                 downRightCapture(x2, y2, x2 + 2, y2 + 2, OTHERPLAYER, BOARD) ||
-                downLeftCapture(x2, y2, x2 - 2, y2 + 2, OTHERPLAYER, BOARD)) {
+                downLeftCapture(x2, y2, x2 - 2, y2 + 2, OTHERPLAYER, BOARD))
+            {
                 error = "Case: There is at least one more compulsory capture.";
                 return true;
             }
@@ -174,11 +215,13 @@ bool OrdinaryRules::captureAvailable(const int &x1, const int &y1, const int &x2
     return false;
 }
 
-bool OrdinaryRules::moveAvailable(const int &x, const int &y, Board &BOARD) {
+bool OrdinaryRules::moveAvailable(const int &x, const int &y, Board &BOARD)
+{
     if (BOARD.getBoard(x + 1, y - 1) == '#' ||
         BOARD.getBoard(x + 1, y + 1) == '#' ||
         BOARD.getBoard(x - 1, y - 1) == '#' ||
-        BOARD.getBoard(x - 1, y + 1) == '#') {
+        BOARD.getBoard(x - 1, y + 1) == '#')
+    {
         return true;
     }
     return false;
@@ -186,18 +229,24 @@ bool OrdinaryRules::moveAvailable(const int &x, const int &y, Board &BOARD) {
 
 /*---------------------------------------------------------------------------------------------------------*/
 bool CrownRules::upRightDirection(const int &x1, const int &y1, const int &x2, const int &y2, const char &OTHERPLAYER,
-                                  Board &BOARD) {
+                                  Board &BOARD)
+{
     xnow = x1;
     ynow = y1;
-    if (x2 > x1 && y2 < y1) {
-        while (xnow < x2 && ynow > y2) {
+    if (x2 > x1 && y2 < y1)
+    {
+        while (xnow < x2 && ynow > y2)
+        {
             ++xnow;
             --ynow;
             cooordinatesallowed.push_back({xnow, ynow});
         }
-        for (int i = 0; i < cooordinatesallowed.size(); ++i) {
-            if (tolower(BOARD.getBoard(cooordinatesallowed[i].first, cooordinatesallowed[i].second)) == OTHERPLAYER) {
-                if (BOARD.getBoard(cooordinatesallowed[i].first + 1, cooordinatesallowed[i].second - 1) == '#') {
+        for (int i = 0; i < cooordinatesallowed.size(); ++i)
+        {
+            if (tolower(BOARD.getBoard(cooordinatesallowed[i].first, cooordinatesallowed[i].second)) == OTHERPLAYER)
+            {
+                if (BOARD.getBoard(cooordinatesallowed[i].first + 1, cooordinatesallowed[i].second - 1) == '#')
+                {
                     cooordinatesallowed.clear();
                     return true;
                 }
@@ -209,18 +258,24 @@ bool CrownRules::upRightDirection(const int &x1, const int &y1, const int &x2, c
 }
 
 bool CrownRules::upLeftDirection(const int &x1, const int &y1, const int &x2, const int &y2, const char &OTHERPLAYER,
-                                 Board &BOARD) {
+                                 Board &BOARD)
+{
     xnow = x1;
     ynow = y1;
-    if (x2 < x1 && y2 < y1) {
-        while (xnow > x2 && ynow > y2) {
+    if (x2 < x1 && y2 < y1)
+    {
+        while (xnow > x2 && ynow > y2)
+        {
             --xnow;
             --ynow;
             cooordinatesallowed.push_back({xnow, ynow});
         }
-        for (int i = 0; i < cooordinatesallowed.size(); ++i) {
-            if (tolower(BOARD.getBoard(cooordinatesallowed[i].first, cooordinatesallowed[i].second)) == OTHERPLAYER) {
-                if (BOARD.getBoard(cooordinatesallowed[i].first - 1, cooordinatesallowed[i].second - 1) == '#') {
+        for (int i = 0; i < cooordinatesallowed.size(); ++i)
+        {
+            if (tolower(BOARD.getBoard(cooordinatesallowed[i].first, cooordinatesallowed[i].second)) == OTHERPLAYER)
+            {
+                if (BOARD.getBoard(cooordinatesallowed[i].first - 1, cooordinatesallowed[i].second - 1) == '#')
+                {
                     cooordinatesallowed.clear();
                     return true;
                 }
@@ -232,18 +287,24 @@ bool CrownRules::upLeftDirection(const int &x1, const int &y1, const int &x2, co
 }
 
 bool CrownRules::downRightDirection(const int &x1, const int &y1, const int &x2, const int &y2, const char &OTHERPLAYER,
-                                    Board &BOARD) {
+                                    Board &BOARD)
+{
     xnow = x1;
     ynow = y1;
-    if (x2 > x1 && y2 > y1) {
-        while (xnow < x2 && ynow < y2) {
+    if (x2 > x1 && y2 > y1)
+    {
+        while (xnow < x2 && ynow < y2)
+        {
             ++xnow;
             ++ynow;
             cooordinatesallowed.push_back({xnow, ynow});
         }
-        for (int i = 0; i < cooordinatesallowed.size(); ++i) {
-            if (tolower(BOARD.getBoard(cooordinatesallowed[i].first, cooordinatesallowed[i].second)) == OTHERPLAYER) {
-                if (BOARD.getBoard(cooordinatesallowed[i].first + 1, cooordinatesallowed[i].second + 1) == '#') {
+        for (int i = 0; i < cooordinatesallowed.size(); ++i)
+        {
+            if (tolower(BOARD.getBoard(cooordinatesallowed[i].first, cooordinatesallowed[i].second)) == OTHERPLAYER)
+            {
+                if (BOARD.getBoard(cooordinatesallowed[i].first + 1, cooordinatesallowed[i].second + 1) == '#')
+                {
                     cooordinatesallowed.clear();
                     return true;
                 }
@@ -255,18 +316,24 @@ bool CrownRules::downRightDirection(const int &x1, const int &y1, const int &x2,
 }
 
 bool CrownRules::downLeftDirection(const int &x1, const int &y1, const int &x2, const int &y2, const char &OTHERPLAYER,
-                                   Board &BOARD) {
+                                   Board &BOARD)
+{
     xnow = x1;
     ynow = y1;
-    if (x2 < x1 && y2 > y1) {
-        while (xnow > x2 && ynow < y2) {
+    if (x2 < x1 && y2 > y1)
+    {
+        while (xnow > x2 && ynow < y2)
+        {
             --xnow;
             ++ynow;
             cooordinatesallowed.push_back({xnow, ynow});
         }
-        for (int i = 0; i < cooordinatesallowed.size(); ++i) {
-            if (tolower(BOARD.getBoard(cooordinatesallowed[i].first, cooordinatesallowed[i].second)) == OTHERPLAYER) {
-                if (BOARD.getBoard(cooordinatesallowed[i].first + 1, cooordinatesallowed[i].second + 1) == '#') {
+        for (int i = 0; i < cooordinatesallowed.size(); ++i)
+        {
+            if (tolower(BOARD.getBoard(cooordinatesallowed[i].first, cooordinatesallowed[i].second)) == OTHERPLAYER)
+            {
+                if (BOARD.getBoard(cooordinatesallowed[i].first + 1, cooordinatesallowed[i].second + 1) == '#')
+                {
                     cooordinatesallowed.clear();
                     return true;
                 }
@@ -277,73 +344,93 @@ bool CrownRules::downLeftDirection(const int &x1, const int &y1, const int &x2, 
     return false;
 }
 
-bool
-CrownRules::legalMove(const int &x1, const int &y1, const int &x2, const int &y2, const char &OTHERPLAYER, Board &BOARD,
-                      string &error, const int &onemove, const int &currentx, const int &currenty) {
+bool CrownRules::legalMove(const int &x1, const int &y1, const int &x2, const int &y2, const char &OTHERPLAYER, Board &BOARD,
+                           string &error, const int &onemove, const int &currentx, const int &currenty)
+{
     if (onemove == 0 &&
         ((currentx != x1 && currenty != y1) ||
          (!upRightCapture(x1, y1, x2, y2, OTHERPLAYER, BOARD) &&
           !upLeftCapture(x1, y1, x2, y2, OTHERPLAYER, BOARD) &&
           !downRightCapture(x1, y1, x2, y2, OTHERPLAYER, BOARD) &&
-          !downLeftCapture(x1, y1, x2, y2, OTHERPLAYER, BOARD)))) {
+          !downLeftCapture(x1, y1, x2, y2, OTHERPLAYER, BOARD))))
+    {
         error = "Case: Not an allowed move for a crown piece.";
         return false;
     }
-    if (upRightDirection(x1, y1, x2, y2, OTHERPLAYER, BOARD)) {
+    if (upRightDirection(x1, y1, x2, y2, OTHERPLAYER, BOARD))
+    {
         xnow = x1;
         ynow = y1;
-        while (xnow < 9 && ynow > 0) {
+        while (xnow < 9 && ynow > 0)
+        {
             ++xnow;
             --ynow;
             cooordinatesallowed.push_back({xnow, ynow});
         }
-        for (int i = 0; i < cooordinatesallowed.size(); ++i) {
-            if (x2 == cooordinatesallowed[i].first && y2 == cooordinatesallowed[i].second) {
+        for (int i = 0; i < cooordinatesallowed.size(); ++i)
+        {
+            if (x2 == cooordinatesallowed[i].first && y2 == cooordinatesallowed[i].second)
+            {
                 cooordinatesallowed.clear();
                 return true;
             }
         }
         cooordinatesallowed.clear();
-    } else if (upLeftDirection(x1, y1, x2, y2, OTHERPLAYER, BOARD)) {
+    }
+    else if (upLeftDirection(x1, y1, x2, y2, OTHERPLAYER, BOARD))
+    {
         xnow = x1;
         ynow = y1;
-        while (xnow > 0 && ynow > 0) {
+        while (xnow > 0 && ynow > 0)
+        {
             --xnow;
             --ynow;
             cooordinatesallowed.push_back({xnow, ynow});
         }
-        for (int i = 0; i < cooordinatesallowed.size(); ++i) {
-            if (x2 == cooordinatesallowed[i].first && y2 == cooordinatesallowed[i].second) {
+        for (int i = 0; i < cooordinatesallowed.size(); ++i)
+        {
+            if (x2 == cooordinatesallowed[i].first && y2 == cooordinatesallowed[i].second)
+            {
                 cooordinatesallowed.clear();
                 return true;
             }
         }
         cooordinatesallowed.clear();
-    } else if (downRightDirection(x1, y1, x2, y2, OTHERPLAYER, BOARD)) {
+    }
+    else if (downRightDirection(x1, y1, x2, y2, OTHERPLAYER, BOARD))
+    {
         xnow = x1;
         ynow = y1;
-        while (xnow < 9 && ynow < 9) {
+        while (xnow < 9 && ynow < 9)
+        {
             ++xnow;
             ++ynow;
             cooordinatesallowed.push_back({xnow, ynow});
         }
-        for (int i = 0; i < cooordinatesallowed.size(); ++i) {
-            if (x2 == cooordinatesallowed[i].first && y2 == cooordinatesallowed[i].second) {
+        for (int i = 0; i < cooordinatesallowed.size(); ++i)
+        {
+            if (x2 == cooordinatesallowed[i].first && y2 == cooordinatesallowed[i].second)
+            {
                 cooordinatesallowed.clear();
                 return true;
             }
         }
         cooordinatesallowed.clear();
-    } else if (downLeftDirection(x1, y1, x2, y2, OTHERPLAYER, BOARD)) {
+    }
+    else if (downLeftDirection(x1, y1, x2, y2, OTHERPLAYER, BOARD))
+    {
         xnow = x1;
         ynow = y1;
-        while (xnow > 0 && ynow < 9) {
+        while (xnow > 0 && ynow < 9)
+        {
             --xnow;
             ++ynow;
             cooordinatesallowed.push_back({xnow, ynow});
         }
-        for (int i = 0; i < cooordinatesallowed.size(); ++i) {
-            if (x2 == cooordinatesallowed[i].first && y2 == cooordinatesallowed[i].second) {
+        for (int i = 0; i < cooordinatesallowed.size(); ++i)
+        {
+            if (x2 == cooordinatesallowed[i].first && y2 == cooordinatesallowed[i].second)
+            {
                 cooordinatesallowed.clear();
                 return true;
             }
@@ -355,17 +442,22 @@ CrownRules::legalMove(const int &x1, const int &y1, const int &x2, const int &y2
 }
 
 bool CrownRules::upRightCapture(const int &x1, const int &y1, const int &x2, const int &y2, const char &OTHERPLAYER,
-                                Board &BOARD) {
-    if (upRightDirection(x1, y1, x2, y2, OTHERPLAYER, BOARD)) {
+                                Board &BOARD)
+{
+    if (upRightDirection(x1, y1, x2, y2, OTHERPLAYER, BOARD))
+    {
         xnow = x1;
         ynow = y1;
-        while (xnow < x2 && ynow > y2) {
+        while (xnow < x2 && ynow > y2)
+        {
             ++xnow;
             --ynow;
             cooordinatesallowed.push_back({xnow, ynow});
         }
-        for (int i = 0; i < cooordinatesallowed.size(); ++i) {
-            if (tolower(BOARD.getBoard(cooordinatesallowed[i].first, cooordinatesallowed[i].second)) == OTHERPLAYER) {
+        for (int i = 0; i < cooordinatesallowed.size(); ++i)
+        {
+            if (tolower(BOARD.getBoard(cooordinatesallowed[i].first, cooordinatesallowed[i].second)) == OTHERPLAYER)
+            {
                 cooordinatesallowed.clear();
                 return true;
             }
@@ -376,17 +468,22 @@ bool CrownRules::upRightCapture(const int &x1, const int &y1, const int &x2, con
 }
 
 bool CrownRules::upLeftCapture(const int &x1, const int &y1, const int &x2, const int &y2, const char &OTHERPLAYER,
-                               Board &BOARD) {
-    if (upLeftDirection(x1, y1, x2, y2, OTHERPLAYER, BOARD)) {
+                               Board &BOARD)
+{
+    if (upLeftDirection(x1, y1, x2, y2, OTHERPLAYER, BOARD))
+    {
         xnow = x1;
         ynow = y1;
-        while (xnow > x2 && ynow > y2) {
+        while (xnow > x2 && ynow > y2)
+        {
             --xnow;
             --ynow;
             cooordinatesallowed.push_back({xnow, ynow});
         }
-        for (int i = 0; i < cooordinatesallowed.size(); ++i) {
-            if (tolower(BOARD.getBoard(cooordinatesallowed[i].first, cooordinatesallowed[i].second)) == OTHERPLAYER) {
+        for (int i = 0; i < cooordinatesallowed.size(); ++i)
+        {
+            if (tolower(BOARD.getBoard(cooordinatesallowed[i].first, cooordinatesallowed[i].second)) == OTHERPLAYER)
+            {
                 cooordinatesallowed.clear();
                 return true;
             }
@@ -397,17 +494,22 @@ bool CrownRules::upLeftCapture(const int &x1, const int &y1, const int &x2, cons
 }
 
 bool CrownRules::downRightCapture(const int &x1, const int &y1, const int &x2, const int &y2, const char &OTHERPLAYER,
-                                  Board &BOARD) {
-    if (downRightDirection(x1, y1, x2, y2, OTHERPLAYER, BOARD)) {
+                                  Board &BOARD)
+{
+    if (downRightDirection(x1, y1, x2, y2, OTHERPLAYER, BOARD))
+    {
         xnow = x1;
         ynow = y1;
-        while (xnow < x2 && ynow < y2) {
+        while (xnow < x2 && ynow < y2)
+        {
             ++xnow;
             ++ynow;
             cooordinatesallowed.push_back({xnow, ynow});
         }
-        for (int i = 0; i < cooordinatesallowed.size(); ++i) {
-            if (tolower(BOARD.getBoard(cooordinatesallowed[i].first, cooordinatesallowed[i].second)) == OTHERPLAYER) {
+        for (int i = 0; i < cooordinatesallowed.size(); ++i)
+        {
+            if (tolower(BOARD.getBoard(cooordinatesallowed[i].first, cooordinatesallowed[i].second)) == OTHERPLAYER)
+            {
                 cooordinatesallowed.clear();
                 return true;
             }
@@ -418,17 +520,22 @@ bool CrownRules::downRightCapture(const int &x1, const int &y1, const int &x2, c
 }
 
 bool CrownRules::downLeftCapture(const int &x1, const int &y1, const int &x2, const int &y2, const char &OTHERPLAYER,
-                                 Board &BOARD) {
-    if (downLeftDirection(x1, y1, x2, y2, OTHERPLAYER, BOARD)) {
+                                 Board &BOARD)
+{
+    if (downLeftDirection(x1, y1, x2, y2, OTHERPLAYER, BOARD))
+    {
         xnow = x1;
         ynow = y1;
-        while (xnow > x2 && ynow < y2) {
+        while (xnow > x2 && ynow < y2)
+        {
             --xnow;
             ++ynow;
             cooordinatesallowed.push_back({xnow, ynow});
         }
-        for (int i = 0; i < cooordinatesallowed.size(); ++i) {
-            if (tolower(BOARD.getBoard(cooordinatesallowed[i].first, cooordinatesallowed[i].second)) == OTHERPLAYER) {
+        for (int i = 0; i < cooordinatesallowed.size(); ++i)
+        {
+            if (tolower(BOARD.getBoard(cooordinatesallowed[i].first, cooordinatesallowed[i].second)) == OTHERPLAYER)
+            {
                 cooordinatesallowed.clear();
                 return true;
             }
@@ -438,42 +545,57 @@ bool CrownRules::downLeftCapture(const int &x1, const int &y1, const int &x2, co
     return false;
 }
 
-bool
-CrownRules::captureAvailable(const int &x1, const int &y1, const int &x2, const int &y2, char OTHERPLAYER, Board &BOARD,
-                             string &error, const string &previousdirection, const int &checkeverydirection) {
-    if (checkeverydirection == 0) {
+bool CrownRules::captureAvailable(const int &x1, const int &y1, const int &x2, const int &y2, char OTHERPLAYER, Board &BOARD,
+                                  string &error, const string &previousdirection, const int &checkeverydirection)
+{
+    if (checkeverydirection == 0)
+    {
         if (upRightCapture(x1, y1, x2, y2, OTHERPLAYER, BOARD) ||
             upLeftCapture(x1, y1, x2, y2, OTHERPLAYER, BOARD) ||
             downRightCapture(x1, y1, x2, y2, OTHERPLAYER, BOARD) ||
-            downLeftCapture(x1, y1, x2, y2, OTHERPLAYER, BOARD)) {
+            downLeftCapture(x1, y1, x2, y2, OTHERPLAYER, BOARD))
+        {
             return true;
         }
-    } else if (checkeverydirection == 1) {
-        if (previousdirection == "ur") {
+    }
+    else if (checkeverydirection == 1)
+    {
+        if (previousdirection == "ur")
+        {
             if (upRightCapture(x2, y2, 9, 0, OTHERPLAYER, BOARD) ||
                 upLeftCapture(x2, y2, 0, 0, OTHERPLAYER, BOARD) ||
-                downRightCapture(x2, y2, 9, 9, OTHERPLAYER, BOARD)) {
+                downRightCapture(x2, y2, 9, 9, OTHERPLAYER, BOARD))
+            {
                 error = "Case: There is at least one more compulsory capture.";
                 return true;
             }
-        } else if (previousdirection == "ul") {
+        }
+        else if (previousdirection == "ul")
+        {
             if (upRightCapture(x2, y2, 9, 0, OTHERPLAYER, BOARD) ||
                 upLeftCapture(x2, y2, 0, 0, OTHERPLAYER, BOARD) ||
-                downLeftCapture(x2, y2, 0, 9, OTHERPLAYER, BOARD)) {
+                downLeftCapture(x2, y2, 0, 9, OTHERPLAYER, BOARD))
+            {
                 error = "Case: There is at least one more compulsory capture.";
                 return true;
             }
-        } else if (previousdirection == "dr") {
+        }
+        else if (previousdirection == "dr")
+        {
             if (upRightCapture(x2, y2, 9, 0, OTHERPLAYER, BOARD) ||
                 downRightCapture(x2, y2, 9, 9, OTHERPLAYER, BOARD) ||
-                downLeftCapture(x2, y2, 0, 9, OTHERPLAYER, BOARD)) {
+                downLeftCapture(x2, y2, 0, 9, OTHERPLAYER, BOARD))
+            {
                 error = "Case: There is at least one more compulsory capture.";
                 return true;
             }
-        } else if (previousdirection == "dl") {
+        }
+        else if (previousdirection == "dl")
+        {
             if (upLeftCapture(x2, y2, 0, 0, OTHERPLAYER, BOARD) ||
                 downRightCapture(x2, y2, 9, 9, OTHERPLAYER, BOARD) ||
-                downLeftCapture(x2, y2, 0, 9, OTHERPLAYER, BOARD)) {
+                downLeftCapture(x2, y2, 0, 9, OTHERPLAYER, BOARD))
+            {
                 error = "Case: There is at least one more compulsory capture.";
                 return true;
             }
@@ -487,7 +609,8 @@ vector<pair<int, int>> Rules::coordinatestocheck;
 
 //Lose for someone who has 0 moves.
 //Draw if none of them have any moves, or if both players have a crown.
-bool Rules::endgame(Board &BOARD) {
+bool Rules::endgame(Board &BOARD)
+{
     OrdinaryRules Ordinary;
     int apossiblemoves = 0, bpossiblemoves = 0, acrowns = 0, bcrowns = 0;
     string nth;
@@ -504,41 +627,53 @@ bool Rules::endgame(Board &BOARD) {
         return a;
     };
     /*---------------------------------------------------------------------------------------------------------*/
-    for (int y = 0; y < 10; ++y) {
-        for (int x = 0; x < 10; ++x) {
+    for (int y = 0; y < 10; ++y)
+    {
+        for (int x = 0; x < 10; ++x)
+        {
             BOARD.getBoard(x, y) == 'A' ? ++acrowns : (BOARD.getBoard(x, y) == 'B' ? ++bcrowns : 0);
         }
     }
-    if (acrowns > 0 && bcrowns > 0) {
+    if (acrowns > 0 && bcrowns > 0)
+    {
         cout << "\n\nYou drew the game, great job!!\n";
         UserInterface::delayScreen();
         return true;
     }
     acrowns > 0 ? ++apossiblemoves : (bcrowns > 0 ? ++bpossiblemoves : 0);
-    for (int y = 0; y < 10; ++y) {
-        for (int x = 0; x < 10; ++x) {
+    for (int y = 0; y < 10; ++y)
+    {
+        for (int x = 0; x < 10; ++x)
+        {
             coordinatestocheck = coordinatesToCheck(x, y);
-            if (BOARD.getBoard(x, y) == 'a') {
-                for (short i = 0; i < coordinatestocheck.size(); ++i) {
+            if (BOARD.getBoard(x, y) == 'a')
+            {
+                for (short i = 0; i < coordinatestocheck.size(); ++i)
+                {
                     if (Rules::basicRules(x, y, coordinatestocheck[i].first, coordinatestocheck[i].second, 'a', BOARD,
                                           nth) &&
                         Ordinary.legalMove(x, y, coordinatestocheck[i].first, coordinatestocheck[i].second, 'b', BOARD,
                                            nth, 1, 1, 1) &&
                         (Ordinary.moveAvailable(x, y, BOARD) ||
                          Ordinary.captureAvailable(x, y, coordinatestocheck[i].first, coordinatestocheck[i].second, 'b',
-                                                   BOARD, nth, nth))) {
+                                                   BOARD, nth, nth)))
+                    {
                         apossiblemoves++;
                     }
                 }
-            } else if (BOARD.getBoard(x, y) == 'b') {
-                for (short i = 0; i < coordinatestocheck.size(); ++i) {
+            }
+            else if (BOARD.getBoard(x, y) == 'b')
+            {
+                for (short i = 0; i < coordinatestocheck.size(); ++i)
+                {
                     if (Rules::basicRules(x, y, coordinatestocheck[i].first, coordinatestocheck[i].second, 'b', BOARD,
                                           nth) &&
                         Ordinary.legalMove(x, y, coordinatestocheck[i].first, coordinatestocheck[i].second, 'a', BOARD,
                                            nth, 1, 1, 1) &&
                         (Ordinary.moveAvailable(x, y, BOARD) ||
                          Ordinary.captureAvailable(x, y, coordinatestocheck[i].first, coordinatestocheck[i].second, 'a',
-                                                   BOARD, nth, nth))) {
+                                                   BOARD, nth, nth)))
+                    {
                         bpossiblemoves++;
                     }
                 }
@@ -546,15 +681,20 @@ bool Rules::endgame(Board &BOARD) {
         }
     }
     /*---------------------------------------------------------------------------------------------------------*/
-    if (apossiblemoves == 0 && bpossiblemoves == 0) {
+    if (apossiblemoves == 0 && bpossiblemoves == 0)
+    {
         cout << "\n\nYou drew the game, great job!!\n";
         UserInterface::delayScreen();
         return true;
-    } else if (apossiblemoves == 0 && acrowns == 0) {
+    }
+    else if (apossiblemoves == 0 && acrowns == 0)
+    {
         cout << "\n\nPlayer [b] Wins, great job!!\n";
         UserInterface::delayScreen();
         return true;
-    } else if (bpossiblemoves == 0 && bcrowns == 0) {
+    }
+    else if (bpossiblemoves == 0 && bcrowns == 0)
+    {
         cout << "\n\nPlayer [a] Wins, great job!!\n";
         UserInterface::delayScreen();
         return true;
